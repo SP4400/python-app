@@ -37,3 +37,44 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Ensures this job runs after the build job
+
+    steps:
+      # Step 1: Checkout the code from the repository (again, in case it's needed here)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install SSH client
+      - name: Install SSH client
+        run: sudo apt-get install -y ssh
+
+      # Step 3: Add EC2 private SSH key to authenticate with EC2 instance
+      - name: Add EC2 SSH key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+
+      # Step 4: SSH into EC2 and deploy the Python app
+      - name: Deploy to EC2
+        run: |
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            # Navigate to your Python app directory
+            cd /path/to/your/python/app
+
+            # Pull the latest changes from the repository (if using Git)
+            git pull origin main
+
+            # Install dependencies from requirements.txt
+            pip install -r requirements.txt
+
+            # Restart the app (adjust this based on how you're running the app)
+            sudo systemctl restart your-python-app.service
+
+            # Alternatively, if not using systemd, you can run the app manually
+            # nohup python3 app.py &
+
+            exit
+          EOF
