@@ -54,8 +54,8 @@ jobs:
       # Step 3: Add EC2 private SSH key to authenticate with EC2 instance
       - name: Add EC2 SSH key
         run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
-          chmod 600 ec2_key.pem
+          echo "${{ secrets.EC2_SSH_KEY }}" > github_actions.pem
+          chmod 600 github_actions.pem
 
       # Step 4: SSH into EC2 and deploy the Python app
       - name: Deploy to EC2
