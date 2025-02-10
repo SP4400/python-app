@@ -62,7 +62,7 @@ jobs:
         run: |
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
             # Navigate to your Python app directory
-            cd /path/to/your/python/app
+            cd /home/ubuntu
 
             # Pull the latest changes from the repository (if using Git)
             git pull origin main
