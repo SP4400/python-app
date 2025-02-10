@@ -60,7 +60,7 @@ jobs:
       # Step 4: SSH into EC2 and deploy the Python app
       - name: Deploy to EC2
         run: |
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             # Navigate to your Python app directory
             cd /home/ubuntu
 
