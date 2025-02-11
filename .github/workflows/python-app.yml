@@ -74,7 +74,7 @@ jobs:
             #sudo systemctl restart .service
 
             # Alternatively, if not using systemd, you can run the app manually
-            nohup python3 app.py &
+            nohup python3 src/main.py &
 
             exit
           EOF
