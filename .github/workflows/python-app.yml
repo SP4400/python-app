@@ -60,29 +60,33 @@ jobs:
       # Step 4: SSH into EC2 and deploy the Python app
       - name: Deploy to EC2
         run: |
-          ssh -i github_actions.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            # Update system and install missing dependencies
-            sudo apt update && sudo apt install -y python3 python3-pip git
-            
-            # Navigate to the correct directory
-            cd /home/ubuntu || exit 1
+            ssh -i github_actions.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+              # Update system packages and install necessary tools
+              sudo apt update && sudo apt install -y python3 python3-pip python3-venv git
 
-            # Clone the repository if it doesn’t exist, else pull latest changes
-            if [ ! -d "python-app" ]; then
-              git clone https://github.com/SP4400/python-app.git 
-            fi
+              # Navigate to /home/ubuntu and ensure the repo is cloned
+              cd /home/ubuntu || exit 1
 
-            cd python-app
-            git pull origin main
-            
-            # Install dependencies
-            pip3 install -r requirements.txt
-            
-            # Stop existing process (if any)
-            pkill -f src/main.py || true
-            
-            # Start the app in the background
-            nohup python3 src/main.py > output.log 2>&1 &
+              # If the python-app directory doesn't exist, clone the repo
+              if [ ! -d "python-app" ]; then
+                git clone https://github.com/SP4400/python-app.git
+              fi
+              cd python-app
 
-            exit
-          EOF
+              # Create a virtual environment for the project
+              python3 -m venv venv
+
+              # Activate the virtual environment
+              source venv/bin/activate
+
+              # Install dependencies in the virtual environment
+              pip install -r requirements.txt
+
+              # Stop any running instance of the app
+              pkill -f src/main.py || true
+
+              # Run the app from the src folder in the background and log output
+              nohup python3 src/main.py > output.log 2>&1 &
+
+              exit
+            EOF
