@@ -71,10 +71,10 @@ jobs:
             pip install -r requirements.txt
 
             # Restart the app (adjust this based on how you're running the app)
-            sudo systemctl restart your-python-app.service
+            #sudo systemctl restart .service
 
             # Alternatively, if not using systemd, you can run the app manually
-            # nohup python3 app.py &
+            nohup python3 app.py &
 
             exit
           EOF
