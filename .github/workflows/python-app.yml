@@ -79,10 +79,10 @@ jobs:
             pip3 install -r requirements.txt
             
             # Stop existing process (if any)
-            pkill -f main.py || true
+            pkill -f src/main.py || true
             
             # Start the app in the background
-            nohup python3 main.py > output.log 2>&1 &
+            nohup python3 src/main.py > output.log 2>&1 &
 
             exit
           EOF
